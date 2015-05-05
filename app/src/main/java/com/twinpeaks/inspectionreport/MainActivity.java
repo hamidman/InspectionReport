@@ -3,34 +3,56 @@ package com.twinpeaks.inspectionreport;
 import java.util.Timer;
 import java.util.TimerTask;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 
     private ImageView mBt1, mBt2, mBt3, mBt4;
     private ImageView mSelBg;
+    private Button btnLogout;
     private LinearLayout mTab_item_container;
     private FragmentManager mFM = null;
     private int mSelectIndex = 0;
     private View last, now;
     private static Boolean isQuit = false;
     private Timer timer = new Timer();
+    private String currentID="";
+    private static String TAG = MainActivity.class.getSimpleName();
+    private RequestQueue mRequestQueue;
+    private String urlJsonArry = "";//"http://192.168.0.162:8080/asdfqwer";
 
     View v1, v2;
-    LinearLayout content_container, content_container2;
+    LinearLayout content_container;
     Intent m_Intent;
 
 
@@ -57,9 +79,53 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         mBt3.setOnClickListener(this);
         mBt4.setOnClickListener(this);
 
+        btnLogout = (Button) findViewById(R.id.button_logout);
+        btnLogout.setOnClickListener(this);
+
         mSelBg = (ImageView) findViewById(R.id.tab_bg_view);
         content_container = (LinearLayout) findViewById(R.id.content_container);
-        content_container2 = (LinearLayout) findViewById(R.id.content_container2);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        currentID = prefs.getString("prefUsername", "");
+
+        urlJsonArry = "http://192.168.0.162:8080/GetAllProjects";
+        //makeProjectsRequest();
+        makeProjectsStringRequest();
+    }
+
+    private void makeProjectsStringRequest() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = urlJsonArry;//"http://www.google.com";
+
+// Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        JSONArray ja;
+                        JSONObject jo;
+                        try {
+                            Log.d(TAG, "Response is: " + response);
+                            jo = new JSONObject(response);
+                            ja = jo.getJSONArray("Projects");
+                            Log.d(TAG, "size: " + ja.length());
+                        } catch (Exception ex) {
+                            Log.d(TAG, "Error in parsing");
+                        }
+
+                        int i = 0;
+                        i++;
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "That didn't work!");
+            }
+        });
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 
     @Override
@@ -105,6 +171,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
                 changeToSetting();
                 break;
+            case R.id.button_logout:
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                prefs.edit().putBoolean("prefIsLoggedIn", false).apply();
+                prefs.edit().putString("prefUsername", "").apply();
+                Intent intent = new Intent(MainActivity.this, FirstActivity.class);
+                startActivity(intent);
+                break;
             default:
                 break;
         }
@@ -134,6 +207,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         FragmentTransaction ft = mFM.beginTransaction();
         ft.replace(R.id.content_container, f);
         ft.commit();
+
+        LoadProjects();
     }
 
     public void changeToMaps() {
@@ -178,5 +253,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         return false;
     }
 
+    public void LoadProjects() {
+
+    }
 
 }

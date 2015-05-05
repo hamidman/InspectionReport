@@ -63,11 +63,23 @@ public class ApplicationController extends Application {
         return prefs.getString(key, defaultValue);
     }
 
+    public void WriteSharePreferences(Context c, String key, String value)
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        prefs.edit().putString(key, value).apply();
+    }
+
     public int ReadSharePreferencesInt(Context c, String key)
     {
         int defaultValue = 0;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
         return prefs.getInt(key, defaultValue);
+    }
+
+    public void WriteSharePreferences(Context c, String key, int value)
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        prefs.edit().putInt(key, value).apply();
     }
 
     public boolean ReadSharePreferencesBool(Context c, String key)
@@ -77,5 +89,9 @@ public class ApplicationController extends Application {
         return prefs.getBoolean(key, defaultValue);
     }
 
-
+    public void WriteSharePreferences(Context c, String key, boolean value)
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        prefs.edit().putBoolean(key, value).apply();
+    }
 }

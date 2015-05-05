@@ -3,7 +3,9 @@ package com.twinpeaks.inspectionreport;
 import com.twinpeaks.inspectionreport.core.ProfileResponse;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,17 +34,23 @@ public class LoginActivity extends Activity implements OnClickListener {
     EditText txtUS, txtPS;
 
     //private String urlJsonObj = "http://api.androidhive.info/volley/person_object.json";
-    private String urlJsonObj = "http://192.168.0.162:8080/";
+    private String urlJsonObj = "";//http://192.168.0.162:8080/";
     //private String urlJsonArry = "http://api.androidhive.info/volley/person_array.json";
     private String urlJsonArry = "http://192.168.0.162:8080/asdfqwer";
     private static String TAG = LoginActivity.class.getSimpleName();
     private String jsonResponse;
     private RequestQueue mRequestQueue;
 
+    public ApplicationController $App() {
+        return ((ApplicationController) this.getApplication());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        urlJsonObj = getString(R.string.server_url);
 
         btn1 = (Button) findViewById(R.id.button1);
         btn1.setOnClickListener(this);
@@ -66,7 +74,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 
     }
 
-    private void makeLoginRequest(String _id, String _ps) {
+    private void makeLoginRequest(final String _id, String _ps) {
         String _request = urlJsonObj + "ID:" + _id + ",PS:" + _ps;
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Method.GET,
                 _request, null, new Response.Listener<JSONObject>() {
@@ -79,6 +87,9 @@ public class LoginActivity extends Activity implements OnClickListener {
                     if ( response.has("Message") ) {
                         String strMSG = response.getString("Message").trim();
                         if( strMSG.equals("User is authenticated.") ) {
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                            prefs.edit().putBoolean("prefIsLoggedIn", true).apply();
+                            prefs.edit().putString("prefUsername", _id).apply();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                         } else if (strMSG.indexOf("Error 300") >= 0) {
