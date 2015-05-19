@@ -16,9 +16,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -29,6 +31,8 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.twinpeaks.inspectionreport.Adapters.ProjectsAdapter;
+import com.twinpeaks.inspectionreport.core.ProjectsResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +53,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
     private String currentID="";
     private static String TAG = MainActivity.class.getSimpleName();
     private RequestQueue mRequestQueue;
-    private String urlJsonArry = "";//"http://192.168.0.162:8080/asdfqwer";
+    private String urlJsonArry = "";
+
+    public JSONArray ja_projects;
 
     View v1, v2;
     LinearLayout content_container;
@@ -62,7 +68,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         setContentView(R.layout.activity_main);
 
         init();
-        changeToProjects();
+
 
     }
 
@@ -95,7 +101,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
     private void makeProjectsStringRequest() {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = urlJsonArry;//"http://www.google.com";
+        String url = urlJsonArry;
 
 // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -103,19 +109,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                     @Override
                     public void onResponse(String response) {
                         // Display the first 500 characters of the response string.
-                        JSONArray ja;
+
                         JSONObject jo;
                         try {
                             Log.d(TAG, "Response is: " + response);
                             jo = new JSONObject(response);
-                            ja = jo.getJSONArray("Projects");
-                            Log.d(TAG, "size: " + ja.length());
+                            ja_projects = jo.getJSONArray("Projects");
+                            //ProjectsResponse pr = new ProjectsResponse((JSONObject)ja.get(0));
+                            changeToProjects();
                         } catch (Exception ex) {
                             Log.d(TAG, "Error in parsing");
                         }
-
-                        int i = 0;
-                        i++;
 
                     }
                 }, new Response.ErrorListener() {
@@ -208,7 +212,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         ft.replace(R.id.content_container, f);
         ft.commit();
 
-        LoadProjects();
     }
 
     public void changeToMaps() {
@@ -253,8 +256,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         return false;
     }
 
-    public void LoadProjects() {
 
+    public JSONArray getProjectsJsonArray() {
+        return ja_projects;
     }
+
 
 }

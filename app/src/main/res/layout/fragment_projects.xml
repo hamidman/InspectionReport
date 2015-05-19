@@ -9,8 +9,19 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="Projects tab"
+        android:text="Projects:"
         android:textColor="#ffffff"
-        android:textSize="50sp" />
+        android:textSize="30sp" />
+
+
+
+    <ListView
+        android:id="@+id/list_projects"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="15dp">
+    </ListView>
 
 </LinearLayout>
