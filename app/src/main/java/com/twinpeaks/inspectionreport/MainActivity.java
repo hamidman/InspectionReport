@@ -41,6 +41,9 @@ import org.json.JSONObject;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 
+    private String userName = "";
+    private int selectedProjectIndex = -1;
+
     private ImageView mBt1, mBt2, mBt3, mBt4;
     private ImageView mSelBg;
     private Button btnLogout;
@@ -69,6 +72,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
         init();
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        userName = prefs.getString("prefUsername", "");
 
     }
 
@@ -116,6 +121,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                             jo = new JSONObject(response);
                             ja_projects = jo.getJSONArray("Projects");
                             //ProjectsResponse pr = new ProjectsResponse((JSONObject)ja.get(0));
+                            int j=0;
+                            for(int i=0; i<ja_projects.length(); i++) {
+                                if ( ((JSONObject)ja_projects.get(i)).get("users").toString().indexOf(userName) < 0 ) {
+                                    ja_projects.remove(j);
+                                } else {
+                                    j++;
+                                }
+                            }
+
                             changeToProjects();
                         } catch (Exception ex) {
                             Log.d(TAG, "Error in parsing");
@@ -261,5 +275,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         return ja_projects;
     }
 
+    public void setSelectedProjectIndex(int ind) {
+        selectedProjectIndex = ind;
+    }
+
+    public int getSelectedProjectIndex() {
+        return selectedProjectIndex;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
 
 }
