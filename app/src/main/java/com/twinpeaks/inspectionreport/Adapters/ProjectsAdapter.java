@@ -43,17 +43,21 @@ public class ProjectsAdapter extends ArrayAdapter<String> {
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.text_project_name);
         TextView extratxt = (TextView) rowView.findViewById(R.id.text_project_description);
+        TextView txtStartDate = (TextView) rowView.findViewById(R.id.text_project_start_date);
+        TextView txtEndDate   = (TextView) rowView.findViewById(R.id.text_project_end_date);
 
         ProjectsResponse pr;
         try {
             pr = new ProjectsResponse((JSONObject) jaProjects.get(position));
             txtTitle.setText( pr.Name );//itemname[position]);
+            extratxt.setText( pr.Description);
+            txtStartDate.setText(pr.StartDate);
+            txtEndDate.setText(pr.EndDate);
         }
         catch (Exception ex) {
 
         }
 
-        extratxt.setText("Description "+itemname[position]);
         return rowView;
 
     };

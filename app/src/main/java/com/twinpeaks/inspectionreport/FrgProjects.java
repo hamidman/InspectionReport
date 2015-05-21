@@ -3,6 +3,7 @@ package com.twinpeaks.inspectionreport;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.twinpeaks.inspectionreport.Adapters.ProjectsAdapter;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class FrgProjects extends Fragment implements OnClickListener {
 
@@ -24,13 +26,9 @@ public class FrgProjects extends Fragment implements OnClickListener {
 
         ListView listProjects;
 
-        JSONArray ja = ((MainActivity) getActivity()).getProjectsJsonArray();
+        final JSONArray ja = ((MainActivity) getActivity()).getProjectsJsonArray();
 
-        final String[] itemname ={
-                "Safari",
-                "Camera"
-
-        };
+        final String[] itemname = new String[ja.length()];
 
         ProjectsAdapter adapter=new ProjectsAdapter(getActivity(), itemname, ja);
         listProjects=(ListView) v.findViewById(R.id.list_projects);
@@ -42,9 +40,12 @@ public class FrgProjects extends Fragment implements OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // TODO Auto-generated method stub
-                String Slecteditem= itemname[+position];
-                Toast.makeText(v.getContext(), Slecteditem, Toast.LENGTH_SHORT).show();
-
+                try {
+                    String Slecteditem = ((JSONObject) ja.get(position)).getString("name"); //itemname[+position];
+                    Toast.makeText(v.getContext(), Slecteditem, Toast.LENGTH_SHORT).show();
+                } catch (Exception ex) {
+                    Log.e("Error", "Error in showing selected item.");
+                }
             }
         });
 
