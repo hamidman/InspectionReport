@@ -3,14 +3,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/normal_bg"
-    android:gravity="center"
+    android:gravity="top"
     android:orientation="vertical" >
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="Jobs tab"
+        android:layout_height="wrap_content"
+        android:text="Jobs:"
         android:textColor="#ffffff"
-        android:textSize="50sp" />
+        android:textSize="30sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selected Project:"
+            android:textColor="#bbbbbb"
+            android:textStyle="bold"
+            android:layout_marginRight="10dp"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/text_selected_project"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#bbbbbb"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@android:color/white" />
+
+    <ListView
+        android:id="@+id/list_jobs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="15dp">
+    </ListView>
 
 </LinearLayout>

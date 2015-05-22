@@ -42,8 +42,9 @@ public class FrgProjects extends Fragment implements OnClickListener {
                 // TODO Auto-generated method stub
                 try {
                     String Slecteditem = ((JSONObject) ja.get(position)).getString("name"); //itemname[+position];
-                    Toast.makeText(v.getContext(), Slecteditem, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(v.getContext(), Slecteditem, Toast.LENGTH_SHORT).show();
                     ((MainActivity)getActivity()).setSelectedProjectIndex(position);
+                    ((MainActivity)getActivity()).changeToJobs();
                 } catch (Exception ex) {
                     Log.e("Error", "Error in showing selected item.");
                 }

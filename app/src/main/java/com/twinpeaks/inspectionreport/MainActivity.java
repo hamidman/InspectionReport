@@ -57,8 +57,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
     private static String TAG = MainActivity.class.getSimpleName();
     private RequestQueue mRequestQueue;
     private String urlJsonArry = "";
+    private String urlGetJobsJsonArry = "";
 
     public JSONArray ja_projects;
+    public JSONArray ja_jobs;
 
     View v1, v2;
     LinearLayout content_container;
@@ -100,8 +102,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         currentID = prefs.getString("prefUsername", "");
 
         urlJsonArry = "http://192.168.0.162:8080/GetAllProjects";
+        urlGetJobsJsonArry = "http://192.168.0.162:8080/GetAllJobs";
         //makeProjectsRequest();
         makeProjectsStringRequest();
+        makeJobsStringRequest();
     }
 
     private void makeProjectsStringRequest() {
@@ -124,7 +128,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                             int j=0;
                             for(int i=0; i<ja_projects.length(); i++) {
                                 if ( ((JSONObject)ja_projects.get(i)).get("users").toString().indexOf(userName) < 0 ) {
-                                    ja_projects.remove(j);
+                                    //ja_projects.remove(j);
+                                    ja_projects = RemoveJSONArray(ja_projects, j);
                                 } else {
                                     j++;
                                 }
@@ -132,7 +137,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
                             changeToProjects();
                         } catch (Exception ex) {
-                            Log.d(TAG, "Error in parsing");
+                            Log.d(TAG, "Error in parsing Projects.");
                         }
 
                     }
@@ -143,6 +148,34 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
             }
         });
 // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
+    private void makeJobsStringRequest() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = urlGetJobsJsonArry;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        JSONObject jo;
+                        try {
+                            Log.d(TAG, "Response is: " + response);
+                            jo = new JSONObject(response);
+                            ja_jobs = jo.getJSONArray("Jobs");
+
+                        } catch (Exception ex) {
+                            Log.d(TAG, "Error in parsing Jobs.");
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "That didn't work!");
+            }
+        });
+
         queue.add(stringRequest);
     }
 
@@ -209,7 +242,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         mSelBg.startAnimation(ta);
     }
 
-    private void changeToJobs() {
+    public void changeToJobs() {
         Fragment f = new FrgJobs();
         if (null == mFM)
             mFM = getSupportFragmentManager();
@@ -287,4 +320,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         return userName;
     }
 
+    public static JSONArray RemoveJSONArray( JSONArray jarray,int pos) {
+
+        JSONArray Njarray=new JSONArray();
+        try{
+            for(int i=0;i<jarray.length();i++){
+                if(i!=pos)
+                    Njarray.put(jarray.get(i));
+            }
+        }catch (Exception e){e.printStackTrace();}
+        return Njarray;
+    }
 }
