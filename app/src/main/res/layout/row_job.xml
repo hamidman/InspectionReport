@@ -51,13 +51,16 @@
             android:id="@+id/button_get_file"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="Get File"/>
 
         <Button
             android:id="@+id/button_open_file"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Open File"/>
+            android:gravity="center"
+            android:text="Open File"
+            android:layout_marginTop="5dp"/>
 
     </LinearLayout>
 

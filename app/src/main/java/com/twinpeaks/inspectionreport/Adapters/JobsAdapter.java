@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.twinpeaks.inspectionreport.R;
 import com.twinpeaks.inspectionreport.core.JobsResponse;
@@ -21,6 +23,8 @@ public class JobsAdapter  extends ArrayAdapter<String> {
     private final Activity context;
     private final String[] itemname;
     private final JSONArray jaJobs;
+    private TextView txtTitle, txtFilename;
+    private Button btnGetFile, btnOpenFile;
 
     public JobsAdapter(Activity context, String[] itemname, JSONArray ja) {
         super(context, R.layout.row_job, itemname);
@@ -34,9 +38,13 @@ public class JobsAdapter  extends ArrayAdapter<String> {
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.row_job, null, true);
 
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.text_job_title);
-        TextView txtFilename = (TextView) rowView.findViewById(R.id.text_job_filename);
+        txtTitle = (TextView) rowView.findViewById(R.id.text_job_title);
+        txtFilename = (TextView) rowView.findViewById(R.id.text_job_filename);
+        btnGetFile = (Button) rowView.findViewById(R.id.button_get_file);
+        btnOpenFile = (Button) rowView.findViewById(R.id.button_open_file);
 
+        btnGetFile.setTag(position);
+        btnOpenFile.setTag(position);
 
         JobsResponse jr;
         try {
@@ -47,6 +55,23 @@ public class JobsAdapter  extends ArrayAdapter<String> {
         catch (Exception ex) {
 
         }
+
+
+        btnGetFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Get " + v.getTag(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        btnOpenFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Open " + v.getTag(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         return rowView;
 

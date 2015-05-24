@@ -331,4 +331,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         }catch (Exception e){e.printStackTrace();}
         return Njarray;
     }
+
+    public JSONArray getJobsJsonArray() {
+        return ja_jobs;
+    }
 }
