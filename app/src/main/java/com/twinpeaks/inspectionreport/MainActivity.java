@@ -1,10 +1,27 @@
 package com.twinpeaks.inspectionreport;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -335,4 +352,48 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
     public JSONArray getJobsJsonArray() {
         return ja_jobs;
     }
+
+    public void DownloadThisFile() {
+        //Toast.makeText(this, "Try to download the file... ", Toast.LENGTH_SHORT).show();
+
+        Download("http://192.168.0.162:8080/GetFile:a.xls", "a.xls");
+
+    }
+
+
+    public void Download(String Url, String fileName)
+    {
+
+        File SDCardRoot = Environment.getExternalStorageDirectory();
+        String myFolder = SDCardRoot.getAbsolutePath();
+
+        DownloadManager downloadManager;
+        long downloadReference;
+
+        downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
+        Uri Download_Uri = Uri.parse(Url);
+        DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
+
+        //Restrict the types of networks over which this download may proceed.
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+        //Set whether this download may proceed over a roaming connection.
+        request.setAllowedOverRoaming(false);
+        //Set the title of this download, to be displayed in notifications (if enabled).
+        request.setTitle("My Data Download");
+        //Set a description of this download, to be displayed in notifications (if enabled)
+        request.setDescription("Android Data download using DownloadManager.");
+        //Set the local destination for the downloaded file to a path within the application's external files directory
+        request.setDestinationInExternalFilesDir(this,"",fileName);
+
+        //Enqueue a new download and same the referenceId
+        downloadReference = downloadManager.enqueue(request);
+
+
+    }
+
+
+
+
+
+
 }

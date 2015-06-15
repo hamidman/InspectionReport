@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.twinpeaks.inspectionreport.MainActivity;
 import com.twinpeaks.inspectionreport.R;
 import com.twinpeaks.inspectionreport.core.JobsResponse;
 import com.twinpeaks.inspectionreport.core.ProjectsResponse;
@@ -60,7 +61,14 @@ public class JobsAdapter  extends ArrayAdapter<String> {
         btnGetFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Get " + v.getTag(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "Get " + v.getTag(), Toast.LENGTH_SHORT).show();
+                //Download("http://192.168.0.162:8080/GetFile:a.xls", "a.xls");
+                try {
+                    JobsResponse jr = new JobsResponse((JSONObject) jaJobs.get(Integer.parseInt(v.getTag().toString())));
+                    ((MainActivity) context).Download("http://192.168.0.162:8080/GetFile:" + jr.Filename, jr.Filename);
+                } catch (Exception ex) {
+
+                }
             }
         });
 
